@@ -15,6 +15,7 @@ import {useState} from 'react'
 import { ethers } from 'ethers'
 import { currency } from '../constant'
 import CountdownTimer from '../components/CountdownTimer'
+import toast from 'react-hot-toast';
 
 
 
@@ -40,17 +41,19 @@ const Home: NextPage = () => {
     const notification = toast.loading("Buying your Tickets...");
     
     try {
-      const data = await BuyTickets({
+      const data = await BuyTickets([{
         value: ethers.utils.parseEther((Number(ethers.utils.formatEther(ticketPrice)) * quantity).toString())
-      });
+      }]);
       
-      toast.success("Tickets purchased successfully!", {id: notification,})
+      toast.success("Tickets purchased successfully!", {id: notification,});
+
+      console.info("Contract Call Success", data)
     } catch (error) {
       toast.error("Whoops something went wrong!", {
         id: notification,
       });
 
-      console.error("contract call failure", err)
+      console.error("contract call failure", error)
     }
   }
 
