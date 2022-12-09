@@ -11,11 +11,13 @@ import {
 } from '@thirdweb-dev/react'
 import Login from '../components/Login'
 import Loading from '../components/Loading'
-import {useState} from 'react'
+import {useState, useEffect} from 'react'
 import { ethers } from 'ethers'
 import { currency } from '../constant'
 import CountdownTimer from '../components/CountdownTimer'
 import toast from 'react-hot-toast';
+import Marquee from "react-fast-marquee";
+import AdminControls from '../components/AdminControls'
 
 
 
@@ -23,6 +25,7 @@ const Home: NextPage = () => {
 
   const address = useAddress();
   const [quantity, setQuantity] = useState<number>(1)
+  const [userTickets, setUserTickets] = useState<number>(0)
   const {contract, isLoading} = useContract(process.env.NEXT_PUBLIC_LOTTERY_CONTRACT_ADDRESS);
   const { data: remainingTickets } = useContractRead(contract, "RemainingTickets");
   const { data: currentWinningReward } = useContractRead(contract, "CurrentWinningReward")
@@ -30,10 +33,44 @@ const Home: NextPage = () => {
   const { data:ticketCommision } = useContractRead(contract, "ticketCommission")
   const { data: expiration } = useContractRead(contract, "expiration")
   const { mutateAsync: BuyTickets } = useContractWrite(contract, "BuyTickets")
+  const { data: tickets } = useContractRead(contract, "getTickets")
+  const { data: winnings } = useContractRead(contract, "getWinningsForAddress", address)
+  const { mutateAsync: WithdrawWinnings } = useContractWrite(contract, "WithdrawWinnings")
+  const { data: lastWinner } = useContractRead(contract, "lastWinner")
+  const { data: lastWinnerAmount } = useContractRead(contract, "lastWinnerAmount")
+  const { data: isLotteryOperator } = useContractRead(contract, "lotteryOperator")
   
   if(isLoading) return <Loading />;
   if(!address) return <Login />;
 
+
+  useEffect(() => {
+    if(!tickets) return;
+
+    const totalTickets: string[] = tickets;
+
+    const noOfUserTickets = totalTickets.reduce((total, ticketAddress) => (
+      ticketAddress === address ? total + 1 : total
+    ), 0);
+      setUserTickets(noOfUserTickets);
+  }, [tickets, address]);
+
+  const onWithdrawWinnings = async () => {
+    const notification = toast.loading("Withdrawing winnings...")
+
+    try {
+      const data = await WithdrawWinnings([{}])
+      
+      toast.success("Withdraw is succeed!", {id: notification,});
+    } catch (error) {
+      toast.error("Whoops something went wrong!", {
+        id: notification,
+      });
+
+      console.error("contract call failure", error)
+    }
+  }
+  
 
   const handleClick = async () => {
     if(!ticketPrice) return;
@@ -67,6 +104,30 @@ const Home: NextPage = () => {
       <div className='flex-1'>
           <Header />
 
+          <Marquee className='bg-[#0A1F1C] p-5 mb-5' gradient={false} speed={100}>
+            <div className='flex space-x-2 mx-10'>
+              <h4 className='text-white font-bold mr-12'>Last Winner : {lastWinner?.toString()}</h4>
+              <h4 className='text-white font-bold'>Previous Winnings: {""}{lastWinnerAmount && ethers.utils.formatEther(lastWinnerAmount?.toString())} {""} {currency}</h4>
+            </div>
+          </Marquee>
+
+          {isLotteryOperator === address && (
+            <div className='flex justify-center'>
+              <AdminControls />
+            </div>
+          )}
+
+          {winnings > 0 && (
+            <div className='max-w-md md:max-w-2xl lg:max-w-4xl mx-auto mt-5'>
+              <button onClick={onWithdrawWinnings} className='p-5 bg-gradient-to-b from-orange-500 to-emerald-600 animate-pulse text-center rounded-xl w-full'>
+                <p className='font-bold'>Winner Winner Chicken Dinner</p>
+                <p>Total Winnings : {ethers.utils.formatEther(winnings.toString())} {""} {currency}</p>
+                <br />
+                <p className='font-bold'>Click here to Withdraw</p>
+              </button>
+            </div>
+          )}
+
           {/* The Next Draw Box*/}
           <div className='space-y-5 md:space-y-0 m-5 md:flex md:flex-row items-start justify-center md:space-x-5'>
             <div className='stats-container'>
@@ -87,6 +148,8 @@ const Home: NextPage = () => {
                 <CountdownTimer />
               </div>
             </div>
+
+             {/* The Price per ticket Box*/}
 
             <div className="stats-container space-y-2">
               <div className='stats-container'>
@@ -123,19 +186,27 @@ const Home: NextPage = () => {
                   <button 
                   disabled={expiration?.toString() < Date.now().toString() || remainingTickets?.toNumber() === 0}
                   onClick={handleClick}
-                  className='mt-5 w-full bg-gradient-to-br from-orange-500 to-emerald-600 px-10 py-5 rounded-md text-white shadow-xl disabled:from-gray-600 disabled:to-gray-600 disabled:cursor-not-allowed'>
-                    Buy Tickets
+                  className='mt-5 w-full bg-gradient-to-br font-semibold from-orange-500 to-emerald-600 px-10 py-5 rounded-md text-white shadow-xl disabled:from-gray-600 disabled:to-gray-600 disabled:cursor-not-allowed'>
+                    Buy {quantity} Tickets for { ticketPrice && Number(ethers.utils.formatEther(ticketPrice.toString())) * quantity} {""} {currency}
                   </button>
                 </div>
+
               </div>
+              
+              {userTickets > 0 && (
+                  <div className='stats'>
+                    <p className='mb-2 text-lg'>you have {userTickets} Tickets in this draw</p>
+                    <div className='flex max-w-sm flex-wrap gap-x-2 gap-y-2 '>
+                      {Array(userTickets).fill("").map((_, index) => (
+                        <p className='text-emerald-300 h-12 w-12 bg-emerald-500/30 rounded-lg flex flex-shrink-0 items-center justify-center text-xs italic' key={index}>{index + 1}</p>
+                      ))}
+                    </div>
+                  </div>
+                )}
             </div>
 
           </div>
 
-          {/* The Price per ticket Box*/}
-          <div>
-
-          </div>
       </div>
       
     </div>
