@@ -6,18 +6,18 @@
 @layer components {
 
     .stats{
-        @apply bg-[#091f1c] text-white p-4 flex-1 rounded-md border-[#004337] border-2
+        @apply bg-[#bde0fe] text-gray-600 p-4 flex-1 rounded-md shadow-lg
     }
     .stats-container{
-        @apply bg-[#091f1c] p-5 rounded-lg border-[#004337] border
+        @apply bg-[#a2d2ff] p-5 rounded-lg shadow-lg
     }
     .countdown {
-        @apply p-8 text-5xl text-center text-white rounded-lg lg:min-w-[150px] bg-[#013f34]
+        @apply p-8 text-5xl text-center text-gray-600 rounded-lg lg:min-w-[150px] bg-[#bde0fe] shadow-lg
     }
     .countdown-label{
-        @apply text-center text-white uppercase text-sm pt-4
+        @apply text-center text-gray-600 uppercase text-sm pt-4
     }
     .admin-button {
-        @apply bg-[#091f1c] p-2 flex-1 rounded-md border-[#004337] border-2 hover:bg-emerald-500/50
+        @apply bg-[#a2d2ff] p-4 flex-1 rounded-md shadow-md   hover:bg-emerald-500/50
     }
 }
