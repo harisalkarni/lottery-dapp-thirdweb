@@ -12,7 +12,7 @@ function DrawBox() {
 
   return (
     <div className='stats-container'>
-              <h1 className='text-5xl text-gray-600 font-semibold text-center mb-4'>The Next Draw</h1>
+              <h1 className='text-4xl text-gray-600 font-bold text-center mb-4'>The Next Draw</h1>
               <div className='flex justify-between p-2 space-x-2'>
                 <div className='stats'>
                   <h2 className='text-sm'>Total Pool</h2>

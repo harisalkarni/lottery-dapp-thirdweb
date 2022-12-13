@@ -10,8 +10,8 @@ function Header() {
 
   return (
     <header className='grid grid-cols-2 md:grid-cols-5 justify-between items-center p-5'>
-        <div className='flex items-center space-x-2'>
-            <img src='https://i.imgur.com/4h7mAu7.png' className='rounded-full h-20 w-20' alt='' />
+        <div className='flex items-center space-x-4'>
+            <img src='https://rahhaus.id/wp-content/uploads/2022/12/logo-lottery.png' className='rounded-full h-20 w-20' alt='' />
        
             <div>
                 <h1 className='text-lg text-gray-600 font-bold'>LETSDRAW LOTTERY</h1>
@@ -22,7 +22,7 @@ function Header() {
         <div className='md:col-span-3 hidden md:flex items-center justify-center rounded-md'>
             <div className='bg-[#a2d2ff] p-4 space-x-2 shadow-md rounded-md'>
                 <NavButton title='Buy Tickets' isActive />
-                <NavButton onClick={disconnect} title='Logout' />
+                <NavButton onClick={disconnect} isActive title='Logout' />
             </div>
         </div>
 

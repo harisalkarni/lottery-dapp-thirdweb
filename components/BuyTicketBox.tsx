@@ -74,7 +74,7 @@ function BuyTicketBox() {
                   <button 
                   disabled={expiration?.toString() < Date.now().toString() || remainingTickets?.toNumber() === 0}
                   onClick={handleClick}
-                  className='mt-5 w-full font-semibold bg-[#a2d2ff] hover:bg-emerald-500/50 px-10 py-5 rounded-md text-gray-600 shadow-xl disabled:from-gray-600 disabled:to-gray-600 disabled:cursor-not-allowed'>
+                  className='mt-5 w-full font-semibold bg-[#a2d2ff] hover:bg-emerald-500/50 px-10 py-5 rounded-md text-gray-600 shadow-xl disabled:bg-gray-400 disabled:cursor-not-allowed'>
                     Buy {quantity} Tickets for { ticketPrice && Number(ethers.utils.formatEther(ticketPrice.toString())) * quantity} {""} {currency}
                   </button>
                 </div>

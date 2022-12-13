@@ -20,7 +20,7 @@ function CountdownTimer() {
         if(completed){
             return (
             <div>
-                <h2 className='text-gray-600 text-xl text-center animate-bounce'>Ticket sales have now CLOSED for this draw</h2>
+                <h2 className='text-gray-600 text-xl text-center animate-bounce mb-4'>Ticket sales have now CLOSED for this draw</h2>
                 <div className='flex space-x-6'>
                         <div className='flex-1'>
                             <div className='countdown animate-pulse'>{hours}</div>

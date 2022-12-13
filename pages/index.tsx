@@ -13,6 +13,7 @@ import MarqueeWinner from '../components/MarqueeWinner'
 import WithdrawButton from '../components/WithdrawButton'
 import DrawBox from '../components/DrawBox'
 import BuyTicketBox from '../components/BuyTicketBox'
+import Footer from '../components/Footer'
 
 
 
@@ -71,7 +72,7 @@ const Home: NextPage = () => {
           </div>
 
           {/* Footer */}
-
+          <Footer />
       </div>
       
     </div>
